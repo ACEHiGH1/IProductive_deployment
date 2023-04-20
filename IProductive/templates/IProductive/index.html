@@ -1,0 +1,88 @@
+{% extends "IProductive/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'IProductive/script.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<div> 
+    <div >
+        <h2 class="text-danger d-flex justify-content-center" id = "dayNumber" >Day Number: {{day.day}}
+        <h2 class="text-primary d-flex justify-content-center" id = "dailyPoints"> Daily Points: {{day.dailyPoints}} </h2>
+    </div>
+    <div>
+        <div class="card mx-3 my-3 bg-light text-black" style="width: auto;" >
+            <div class="card-body">
+              <h5 class="card-title ">Tasks</h5>
+              <ul class="list-group" id = "tasksList">
+                {% for task in day.dayTasks.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center  mx-1 my-1 text-dark" id = "task{{task.pk}}" style = "display: block;">
+                  {{ task.description }}
+                  <span class="badge badge-primary badge-pill" id = "pointsTask{{task.pk}}" >{{task.taskPoints}} Points </span>
+                  <span class="badge badge-success" id = "completedStatusTask{{task.pk}}" style = "display: {% if task.completed %} block; {% else %} none; {% endif %}" > Status : Completed </span>
+                  <span class="badge badge-danger" id = "incompletedStatusTask{{task.pk}}" style = "display: {% if task.completed %} none; {% else %} block; {% endif %}"> Status : Incomplete </span>
+                  <button type="button" class="btn btn-outline-success btn-sm" id = "completeButtonTask{{task.pk}}" style = "display: {% if task.completed %} none; {% else %} block; {% endif %}" onclick = "completeTask({{task.pk}})">Mark as Completed.</button>
+                  <button type="button" class="btn btn-outline-danger btn-sm" id = "incompleteButtonTask{{task.pk}}" style = "display: {% if task.completed %} block; {% else %} none; {% endif %}" onclick = "incompleteTask({{task.pk}})" >Mark as Incompleted.</button>
+                  <button type="button" class="btn btn-secondary" id = "deleteTask{{task.pk}}" onclick = "deleteTask({{task.pk}})" >Delete Task</button>
+                </li>
+                  {% endfor %}
+                </ul>
+                <button type="button" class="btn btn-warning" id = "showNewTaskFormButton" onclick="showNewTaskForm()">Create New Task</button>
+            </div>
+          </div>
+          
+          
+          <form id = "createNewTask" style = "display: none" class = "border border-dark rounded border-5 mx-3 bg-warning text-dark font-weight-bold" action = "{% url 'addTask' %}" method = "POST">
+            {% csrf_token %}
+            <div class="form-group mx-1 my-1">
+              <label for="taskDescription">Task Description:</label>
+              <input type="text" name = "taskDescription" class="form-control" id="taskDescription" aria-describedby="emailHelp" placeholder="Task Description">
+            </div>
+            <div class="form-group mx-1 my-1 ">
+              <label for="taskPoints">Points: </label>
+              <input type="number" name = "taskPoints" class="form-control" id="taskPoints" placeholder="Difficulty Points 1-50" min = "0" max = "50" step = "1" oninput="validity.valid||(value='');" >
+            </div>
+            <button type="submit" class="btn btn-primary mx-1 my-1" id = "addTaskButton">Add Task</button>
+            <button type="button" class="btn btn-danger mx-1 my-1" id = "removeTaskFormButton" onclick = "hideNewTaskForm()">Cancel</button>
+          </form>
+
+          <div class="card mx-3 my-3 bg-light text-black" style="width: auto;" >
+            <div class="card-body">
+              <h5 class="card-title">Hobbies</h5>
+              <ul class="list-group" id = "hobbyList">
+                {% for hobby in day.dayHobbies.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center mx-1 my-1" id = "hobby{{hobby.pk}}">
+                  {{ hobby.description }}
+                  <span class="badge badge-primary badge-pill" id = "pointsHobby{{hobby.pk}}" >{{hobby.hobbyPoints}} Points </span>
+                  <span class="badge badge-success" id = "completedStatusHobby{{hobby.pk}}" style = "display: {% if hobby.completed %} block; {% else %} none; {% endif %}" > Status : Completed </span>
+                  <span class="badge badge-danger" id = "incompletedStatusHobby{{hobby.pk}}" style = "display: {% if hobby.completed %} none; {% else %} block; {% endif %}"> Status : Incomplete </span>
+                  <button type="button" class="btn btn-outline-success btn-sm" id = "completeButtonHobby{{hobby.pk}}" style = "display: {% if hobby.completed %} none; {% else %} block; {% endif %}" onclick = "completeHobby({{hobby.pk}})">Mark as Completed.</button>
+                  <button type="button" class="btn btn-outline-danger btn-sm" id = "incompleteButtonHobby{{hobby.pk}}" style = "display: {% if hobby.completed %} block; {% else %} none; {% endif %}" onclick = "incompleteHobby({{hobby.pk}})" >Mark as Incompleted.</button>
+                  <button type="button" class="btn btn-secondary" id = "deleteHobby{{hobby.pk}}" onclick = "deleteHobby({{hobby.pk}})" >Delete Hobby</button>
+                </li>
+                  {% endfor %}
+                </ul>
+                <button type="button" class="btn btn-warning" id = "showNewHobbyFormButton" onclick="showNewHobbyForm()">Create New Hobby</button>
+            </div>
+          </div>
+
+          <form id = "createNewHobby" style = "display: none" class = "border border-dark rounded border-5 mx-3 bg-info text-dark font-weight-bold" action = "{% url 'addHobby' %}" method = "POST">
+            {% csrf_token %}
+            <div class="form-group mx-1 my-1">
+              <label for="hobbyDescription">Hobby Description:</label>
+              <input type="text" name = "hobbyDescription" class="form-control" id="hobbyDescription" aria-describedby="emailHelp" placeholder="Hobby Description">
+            </div>
+            <div class="form-group mx-1 my-1">
+              <label for="hobbyPoints">Points: </label>
+              <input type="number" name = "hobbyPoints" class="form-control" id="hobbyPoints" placeholder="Points 1-100" min = "0" max = "100" step = "1" oninput="validity.valid||(value='');" >
+            </div>
+            <button type="submit" class="btn btn-primary mx-1 my-1" id = "addHobbyButton">Add Hobby</button>
+            <button type="button" class="btn btn-danger mx-1 my-1" id = "removeHobbyFormButton" onclick = "hideNewHobbyForm()">Cancel</button>
+          </form>
+    </div>
+    <div>
+      <a href = "{% url 'submitDay' %}" class="btn btn-danger btn-lg d-flex justify-content-center mt-5" >End Day</a>
+    </div>
+</div>
+{% endblock %}

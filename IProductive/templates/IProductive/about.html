@@ -1,0 +1,59 @@
+{% extends "IProductive/layout.html" %}
+{% load static %}
+
+{%block body%}
+  
+  <div class="bg-white py-5">
+    <div class="container py-5">
+      <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-2 order-lg-1"><i class="fa fa-bar-chart fa-2x mb-3 text-primary"></i>
+          <h2 class="font-weight-light">Improve Yourself Daily.</h2>
+          <p class="font-italic text-muted mb-4">Keep Track of Your Daily Tasks, Complete them, Win Points and Challenge Your Friends. Being Productive is Finally Fun and Easy.</p>
+        </div>
+        <div class="col-lg-5 px-5 mx-auto order-1 order-lg-2"><img src="http://thestartupmag.com/wp-content/uploads/2020/07/bigstock-Coach-Focused-On-Motivation-To-299274559-1-595x397.jpg" alt="" class="img-fluid mb-4 mb-lg-0"></div>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-lg-5 px-5 mx-auto"><img src="https://www.photosforhomes.com/wp-content/uploads/2022/08/Best-Tips-for-Getting-A-Work-Life-Balance.png" alt="" class="img-fluid mb-4 mb-lg-0"></div>
+        <div class="col-lg-6"><i class="fa fa-leaf fa-2x mb-3 text-primary"></i>
+          <h2 class="font-weight-light">Balance your Life.</h2>
+          <p class="font-italic text-muted mb-4">Spend Your Hard Earned Points by Going to a Concert, Playing Golf, or Doing what YOU Consider Fun. Balance is Key. </p>
+          {% if user.is_authenticated == False %}
+          <a href="{% url 'login'%}" class="btn btn-light px-5 rounded-pill shadow-sm">Login!</a>
+          <a href="{% url 'register'%}" class="btn btn-light px-5 rounded-pill shadow-sm">Join Us!</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-light py-5">
+    <div class="container py-5">
+      <div class="row mb-4">
+        <div class="col-lg-5">
+          <h2 class="display-4 font-weight-light">Our team</h2>
+        </div>
+      </div>
+  
+      <div class="row text-center">
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5">
+          <div class="bg-white rounded shadow-sm py-5 px-4" class = "d-flex justify-content-center"><img src="https://media-exp1.licdn.com/dms/image/C5603AQGAWf4SNgFyuA/profile-displayphoto-shrink_800_800/0/1636266875606?e=1676505600&v=beta&t=DnUbALeilsC8pWTl8xAGdIh9bSn6759Xc8bAgyFJ3wE" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+            <h5 class="mb-0">Gerald Dhima</h5><span class="small text-uppercase text-muted">Founder</span>
+            <ul class="social mb-0 list-inline mt-3">
+              <li class="list-inline-item"><a href="https://www.linkedin.com/in/gerald-dhima-6153b3114/" class="social-link"><i class="fa fa-linkedin"></i> LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- End-->
+  
+      </div>
+    </div>
+  </div>
+  
+  
+  <footer class="bg-light pb-5">
+    <div class="container text-center">
+      <p class="font-italic text-muted mb-0">&copy; Copyrights IProductive.com All rights reserved.</p>
+    </div>
+  </footer>
+{% endblock %}

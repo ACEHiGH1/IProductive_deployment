@@ -1,0 +1,108 @@
+{% extends "IProductive/layout.html" %}
+
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'IProductive/script.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="card mx-3 my-3 bg-light text-dark" style="width: auto;">
+        <div class="card-body">
+            <h5 class="card-title font-weight-bold text-primary">{{otherUser.username}}</h5>
+            <p class="card-text font-weight-bold">Total Points: <span class = "font-weight-normal">{{otherProfile.productivityPoints}}</span></p>
+            <p class="card-text font-weight-bold">Date Joined: <em class="font-weight-normal">{{otherProfile.date}}</em></p>
+            <p class="card-text font-weight-bold">Days Completed: <span class = "font-weight-normal">{{otherProfile.daysCompleted}}</span></p>
+            <p class="card-text font-weight-bold" id = "friendsCount">Friends: <span class = "font-weight-normal">{{otherProfile.friends.count}}</span></p>
+            {% if gotAFriendRequestFromUser and otherProfile.owner != request.user %}
+            <div class="alert alert-dark mx-3 my-3" role="alert" id = "">
+                You have a pending friend request from this user.
+                <button type="button" class="btn btn-success btn-sm" id = "accept{{otherUser.username}}profile" onclick = "acceptFriendRequest('{{otherUser.username}}')">Accept</button> 
+                <button type="button" class="btn btn-danger btn-sm mr-2" id = "decline{{otherUser.username}}profile" onclick = "declineFriendRequest('{{otherUser.username}}')">Decline</button>
+            </div>
+            {% else %}
+            {% if areFriends and otherProfile.owner != request.user and not friendRequestSent %}
+            <button type="button" class="btn btn-warning btn-sm" id = "removeFriendButton" onclick = "removeFriend('{{otherUser.username}}')">Remove Friend</button>
+            <button type="button" class="btn btn-primary btn-sm" id = "addFriendButton" style = "display: none;" onclick = "addFriend('{{otherUser.username}}')">Add Friend</button>
+            <button type="button" class="btn btn-secondary btn-sm" id = "cancelFriendRequest" style = "display: none;" onclick = "removeFriendRequest('{{otherUser.username}}')">Cancel Friend Request</button>
+            {% elif not areFriends and otherProfile.owner != request.user and not friendRequestSent %}
+            <button type="button" class="btn btn-primary btn-sm" id = "addFriendButton" onclick = "addFriend('{{otherUser.username}}')">Add Friend</button>
+            <button type="button" class="btn btn-warning btn-sm" id = "removeFriendButton" onclick = "removeFriend('{{otherUser.username}}')" style = "display: none;">Remove Friend</button>
+            <button type="button" class="btn btn-secondary btn-sm" id = "cancelFriendRequest" style = "display: none;" onclick = "removeFriendRequest('{{otherUser.username}}')">Cancel Friend Request</button>
+            {% elif friendRequestSent %}
+            <button type="button" class="btn btn-primary btn-sm" id = "addFriendButton" onclick = "addFriend('{{otherUser.username}}')" style = "display: none;">Add Friend</button>
+            <button type="button" class="btn btn-warning btn-sm" id = "removeFriendButton" onclick = "removeFriend('{{otherUser.username}}')" style = "display: none;">Remove Friend</button>
+            <button type="button" class="btn btn-secondary btn-sm" id = "cancelFriendRequest" style = "display: block;" onclick = "removeFriendRequest('{{otherUser.username}}')">Cancel Friend Request</button>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div id = "otherUserDaysOverview">
+        {% if areFriends or otherProfile.owner == request.user%}
+        <div class="mx-3 my-3 text-dark border border-dark border-5 rounded" >
+        <h1 class="mx-3 my-3 text-danger"> Previous Completed Days </h1>
+        <ul class="list-group list-group-flush">
+            {% for day in otherUser.userDays.all %}
+            {% if day != otherUserCurrentDay %}
+            <li class="list-group-item">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <strong class = "text-dark"> Day {{day.day}} </strong>
+                      <span class="badge bg-primary" class = > Total Points: {{day.dailyPoints}}</span>
+                      <button type="button" class="btn btn-primary btn-sm" id = "viewDay{{day.pk}}" onclick = "viewDay({{day.pk}})">View</button>
+                      <button type="button" class="btn btn-primary btn-sm" id = "closeDay{{day.pk}}" onclick = "closeDay({{day.pk}})" style = "display: none;">Close</button>
+                    </div>
+
+                    <div id = "day{{day.pk}}details" style = "display : none;">
+
+                        <div class="card" style="width: auto;">
+                            <div class = "card-header mx-2 my-2 bg-dark text-white">
+                            Tasks
+                            </div>
+                        <ul class="list-group list-group-flush">
+                            {% for task in day.dayTasks.all%}
+                            <li class="list-group-item">
+                                <strong> Task Description:</strong> {{task.description}} 
+                                <span class="badge badge-primary badge-pill" >{{task.taskPoints}} Points </span>
+                                {% if task.completed %}
+                                <span class="badge badge-success"> <strong> Status :</strong> Completed  </span>
+                                {% else %}
+                                <span class="badge badge-danger"> <strong> Status :</strong> Incompleted  </span>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="card" style="width: auto;">
+                        <div class = "card-header mx-2 my-2 bg-success text-white">
+                            Hobbies
+                            </div>
+                        <ul class="list-group list-group-flush">
+                            {% for hobby in day.dayHobbies.all%}
+                            <li class="list-group-item">
+                                Task Description: {{hobby.description}} 
+                                <span class="badge badge-primary badge-pill" >{{hobby.hobbyPoints}} Points </span>
+                                {% if hobby.completed %}
+                                <span class="badge badge-success"> <strong>Status :</strong> Completed </span>
+                                {% else %}
+                                <span class="badge badge-danger"><strong>Status :</strong> Incompleted </span>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    </div>
+                  </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        {% elif otherProfile.owner != request.user %}
+        <div class="alert alert-info mx-2 my-3" role="alert" id = "notFriendsActivity">
+           You should be friends with {{otherProfile.owner.username}} to see his activity.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

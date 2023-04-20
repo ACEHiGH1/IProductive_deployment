@@ -1,0 +1,25 @@
+{% extends "IProductive/layout.html "%}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'IProductive/script.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="mx-4 my-4">
+    <ol class="list-group list-group-numbered">
+        {% for profile in profiles %}
+        <li class="list-group-item d-flex justify-content-between align-items-start my-1 border-top bg-light">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">
+                <a href="{% url 'viewProfile' profile.owner.username %}">{{profile.owner.username}}</a>
+            </div>
+            Joined on: {{profile.date}} <br>
+            Days Completed: {{profile.daysCompleted}}
+          </div>
+          <span class="badge bg-primary rounded-pill">{{profile.productivityPoints}}</span>
+        </li>
+        {% endfor %}
+      </ol>
+</div>
+{% endblock %}

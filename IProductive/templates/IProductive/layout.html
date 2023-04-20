@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>{% block title %}IProductive{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'IProductive/styles.css' %}" rel="stylesheet">
+        {% block script %}
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">IProductive</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse" id="navbarsExample04">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                  {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="#">Welcome {{ user.username }}!!</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'leaderboard' %}">Leaderboard</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'viewMyProfile' %}">My Profile</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false" onclick="dropDownFunction()">Friend Requests <span class="badge badge-light">{{user.friendsRequestsGot.all.count}}</span></a>
+                    <ul class="dropdown-menu w-100" aria-labelledby="dropdown04" id = "friendRequestDropdown" style = "display: none;" >
+                      {% for friendRequest in user.friendsRequestsGot.all %}
+                      <li class = "d-flex justify-content-between align-items-center">
+                        <a class="link-primary ml-3" aria-current="page" href="{% url 'viewProfile' friendRequest.fromUser.username %}">{{friendRequest.fromUser.username}}</a>
+                      <button type="button" class="btn btn-success btn-sm" id = "accept{{friendRequest.fromUser.username}}" onclick = "acceptFriendRequest('{{friendRequest.fromUser.username}}')">Accept</button> 
+                      <button type="button" class="btn btn-danger btn-sm mr-2" id = "decline{{friendRequest.fromUser.username}}" onclick = "declineFriendRequest('{{friendRequest.fromUser.username}}')">Decline</button>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                  </li>
+                  {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link disabled" aria-current="page" href="#">Home</a>
+                  </li> 
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                  </li>
+                  {% endif %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}" tabindex="-1" aria-disabled="true">About</a>
+                  </li>
+                </ul>
+                <form>
+                  <div class = "row">
+                    <div class = "col">
+                  <input class="form-control" type="text" placeholder="User Search" aria-label="Search" id = "usernameSearched">
+                    </div>
+                    <div class = "col">
+                  <button type="button" class="btn btn-light" id = "searchButton" onclick = "searchUsername()">Search</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </nav>
+
+        <div class="body" class="bg-dark">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
